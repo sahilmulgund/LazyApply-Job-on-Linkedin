@@ -2,3 +2,5 @@
 node_modules/
 # Track tensorflow.dll with Git LFS
 !node_modules/@tensorflow/tfjs-node/deps/lib/tensorflow.dll
+node_modules/
+!.gitattributes
