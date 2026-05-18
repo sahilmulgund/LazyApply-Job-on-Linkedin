@@ -1,50 +1,171 @@
-# LazyApply-Job-on-Linkedin
+<div align="center">
 
-This project automates the process of applying to jobs on LinkedIn by automatically answering application questions using Playwright and a set of customizable answer databases.
+# ⚡ LazyApply — AI-Powered LinkedIn Job Automation
+
+**Automatically fill and submit LinkedIn job applications using NLP and browser automation**
+
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
+[![NLP](https://img.shields.io/badge/NLP-Natural_Library-purple?style=for-the-badge)](https://github.com/NaturalNode/natural)
+
+> 🔬 This project is the practical implementation of the published research paper:
+> **"Streamlining the Recruitment Process: The Future of Automatic Job Application"**
+
+</div>
+
+---
+
+## The Problem
+
+Applying to jobs on LinkedIn is repetitive. The same questions — years of experience, willingness to relocate, expected salary, notice period — appear across hundreds of applications. Answering them manually wastes hours.
+
+LazyApply automates this. It uses Playwright to control the browser and NLP to intelligently match new questions to answers you've already given.
+
+---
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   LazyApply Flow                     │
+└─────────────────────────────────────────────────────┘
+
+1. Playwright opens LinkedIn and navigates to job listing
+         │
+         ▼
+2. Detects application form fields
+         │
+    ┌────┴───────────────────────────────┐
+    │  Question type detection           │
+    ├────────────┬────────────┬──────────┤
+    │  Numeric   │   Binary   │ Dropdown │
+    └────┬───────┴──────┬─────┴────┬─────┘
+         │              │          │
+         ▼              ▼          ▼
+3. NLP similarity match against JSON answer database
+         │
+    ┌────┴──────────────────────────────┐
+    │  Match found?                     │
+    ├──────────────┬────────────────────┤
+    │     YES      │        NO          │
+    │  Auto-fill   │  Prompt user       │
+    │              │  Save to database  │
+    └──────────────┴────────────────────┘
+         │
+         ▼
+4. Submit application
+```
+
+---
 
 ## Features
 
-- **Automated Job Application:** Uses Playwright to fill out LinkedIn job application forms.
-- **Smart Question Handling:** Supports numeric, binary (yes/no), and dropdown questions.
-- **Answer Databases:** Remembers your answers in JSON files for future applications.
-- **Similarity Matching:** Uses NLP to match new questions to previously answered ones.
-- **Manual Fallback:** Prompts the user for answers if a new or unrecognized question is encountered.
+- **Playwright automation** — controls Chrome/Firefox to navigate LinkedIn's application UI end-to-end
+- **Smart question matching** — uses NLP (TF-IDF similarity via the `natural` library) to match new questions to your stored answers
+- **3 question types handled:**
+  - `utils_Numeric.js` — experience years, salary expectations, numeric inputs
+  - `utils_Binary.js` — yes/no, radio button questions
+  - `utils_DropDown.js` — select dropdowns
+- **Persistent answer learning** — JSON databases grow with every new question, reducing manual input over time
+- **Manual fallback** — prompts you in the terminal for genuinely new questions, then saves the answer for future use
+
+---
+
+## Quickstart
+
+### Prerequisites
+- Node.js v14+
+- Playwright (installs browsers automatically)
+
+### Setup
+
+```bash
+# 1. Clone
+git clone https://github.com/sahilmulgund/LazyApply-Job-on-Linkedin.git
+cd LazyApply-Job-on-Linkedin
+
+# 2. Install dependencies (includes Playwright + NLP)
+npm install
+
+# 3. Add your resume
+# Replace Cashier Resume.pdf with your own resume PDF
+
+# 4. Pre-fill common answers (optional but recommended)
+# Edit numeric_response.json, binary_response.json, dropdown_response.json
+# with your standard answers to common questions
+
+# 5. Run
+node send_application.js
+```
+
+---
+
+## Answer Database Format
+
+**numeric_response.json** (years of experience, salary, etc.)
+```json
+{
+  "years of experience": 2,
+  "expected salary": 800000,
+  "notice period in days": 30
+}
+```
+
+**binary_response.json** (yes/no questions)
+```json
+{
+  "are you willing to relocate": true,
+  "do you have a valid work permit": true,
+  "are you comfortable working remotely": true
+}
+```
+
+**dropdown_response.json** (select options)
+```json
+{
+  "highest level of education": "Bachelor's",
+  "employment type preference": "Full-time"
+}
+```
+
+---
 
 ## File Structure
 
-- `send_application.js` - Main script to automate the application process.
-- `utils_Numeric.js` - Handles numeric questions and answer similarity using NLP.
-- `utils_Binary.js` - Handles yes/no (binary) questions.
-- `utils_DropDown.js` - Handles dropdown selection questions.
-- `numeric_response.json`, `binary_response.json`, `dropdown_response.json` - Databases for storing your answers.
-- `Cashier Resume.pdf` - Example resume for uploads.
+```
+LazyApply-Job-on-Linkedin/
+├── send_application.js       # Main entry point — runs the automation
+├── utils_Numeric.js          # Numeric question handler + NLP matching
+├── utils_Binary.js           # Binary (yes/no) question handler
+├── utils_DropDown.js         # Dropdown question handler
+├── numeric_response.json     # Stored numeric answers
+├── binary_response.json      # Stored binary answers
+├── dropdown_response.json    # Stored dropdown answers
+└── package.json
+```
 
-## Usage
+---
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+## Research Connection
 
-2. **Run the automation script:**
-   ```bash
-   node send_application.js
-   ```
+This project directly implements the system proposed in the paper:
 
-3. **Answer new questions:**  
-   If a question is not recognized, you will be prompted in the terminal or browser to provide an answer, which will be saved for future use.
+> **"Streamlining the Recruitment Process: The Future of Automatic Job Application"** — Saheel Mulgund
 
-## Requirements
+The paper explores how NLP and browser automation can reduce the manual effort in job applications, improve application consistency, and scale the job search process. LazyApply is the working prototype.
 
-- Node.js
-- Playwright
-- Natural (NLP library for similarity matching)
+---
 
-## Customization
+## ⚠️ Disclaimer
 
-- Edit the JSON files to pre-fill answers for common questions.
-- Update the code to handle additional question types as needed.
+This project is for educational and research purposes. Use responsibly and in compliance with [LinkedIn's Terms of Service](https://www.linkedin.com/legal/user-agreement). The author is not responsible for account restrictions resulting from misuse.
 
-## Disclaimer
+---
 
-This project is for educational purposes. Use responsibly and in accordance with LinkedIn's terms of service.
+<div align="center">
+
+Built by [Saheel Mulgund](https://github.com/sahilmulgund) · [LinkedIn](https://www.linkedin.com/in/saheelmulgund)
+[Research Publication](#) · [GitHub Profile](https://github.com/sahilmulgund)
+
+</div>
